@@ -18,13 +18,15 @@ section {
   margin-bottom: 2rem;
 }
 
-.ad-form {
+.ad-form,
+.auth-form {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-.ad-form label {
+.ad-form label,
+.auth-form label {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -63,6 +65,34 @@ button:disabled {
 .actions {
   display: flex;
   gap: 0.5rem;
+}
+
+.top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.top-bar h1 {
+  margin: 0;
+}
+
+.auth-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.auth-form {
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 1rem;
+  min-width: 260px;
 }
 
 .ad-list {

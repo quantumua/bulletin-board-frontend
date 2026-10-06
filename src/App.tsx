@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import AdForm from './AdForm'
+import AuthHeader from './AuthHeader'
 import { createAd, listAds, updateAd, type Ad, type AdInput } from './api'
 
 export default function App() {
@@ -26,7 +27,10 @@ export default function App() {
 
   return (
     <main>
-      <h1>Bulletin Board</h1>
+      <div className="top-bar">
+        <h1>Bulletin Board</h1>
+        <AuthHeader />
+      </div>
 
       <section>
         <h2>New ad</h2>
