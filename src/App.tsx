@@ -4,12 +4,17 @@ import AuthBar from './AuthBar'
 import { ApiError, createAd, listAds, updateAd, type Ad, type AdInput } from './api'
 import { canEdit } from './permissions'
 import { useAuth } from './useAuth'
+import UsersList from './UsersList'
 
 export default function App() {
   const { user, sessionExpired, expireSession } = useAuth()
   const [ads, setAds] = useState<Ad[]>([])
   const [editingId, setEditingId] = useState<number | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
+  const [tab, setTab] = useState<'ads' | 'users'>('ads')
+
+  // Logout or an expired session returns to Ads, so the next login starts there
+  if (!user && tab !== 'ads') setTab('ads')
 
   useEffect(() => {
     listAds()
@@ -44,52 +49,68 @@ export default function App() {
 
       {!user && sessionExpired && <p className="error">Your session has ended. Please log in again.</p>}
 
-      {!user && (
-        <section>
-          <h2>New ad</h2>
-          <p className="muted">Log in to post an ad.</p>
-        </section>
+      {user && (
+        <nav className="tabs">
+          <button type="button" className={tab === 'ads' ? 'tab active' : 'tab'} onClick={() => setTab('ads')}>
+            Ads
+          </button>
+          <button type="button" className={tab === 'users' ? 'tab active' : 'tab'} onClick={() => setTab('users')}>
+            Users
+          </button>
+        </nav>
       )}
 
-      {/* Stays mounted (hidden) when anonymous so a draft survives an expired session */}
-      <section hidden={!user}>
-        <h2>New ad</h2>
-        <AdForm onSubmit={handleCreate} />
-      </section>
+      {user && tab === 'users' && <UsersList onUnauthorized={expireSession} />}
 
-      <section>
-        <h2>Ads</h2>
-        {loadError && <p className="error">Could not load ads: {loadError}</p>}
-        {!loadError && ads.length === 0 && <p className="muted">No ads yet.</p>}
-        <ul className="ad-list">
-          {ads.map((ad) => (
-            <li key={ad.id} className="ad-card">
-              {editingId === ad.id ? (
-                <AdForm
-                  ad={ad}
-                  onSubmit={(input) => handleUpdate(ad.id, input)}
-                  onCancel={() => setEditingId(null)}
-                />
-              ) : (
-                <>
-                  <h3>{ad.title}</h3>
-                  <p className="description">{ad.description}</p>
-                  <div className="meta">
-                    <span className="muted">
-                      {ad.author ? `By ${ad.author} · ` : ''}Updated {new Date(ad.updatedAt).toLocaleString()}
-                    </span>
-                    {canEdit(ad, user) && (
-                      <button type="button" className="secondary" onClick={() => setEditingId(ad.id)}>
-                        Edit
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
-      </section>
+      {/* Stays mounted (hidden) on the Users tab so an ad draft survives switching tabs */}
+      <div hidden={tab !== 'ads'}>
+        {!user && (
+          <section>
+            <h2>New ad</h2>
+            <p className="muted">Log in to post an ad.</p>
+          </section>
+        )}
+
+        {/* Stays mounted (hidden) when anonymous so a draft survives an expired session */}
+        <section hidden={!user}>
+          <h2>New ad</h2>
+          <AdForm onSubmit={handleCreate} />
+        </section>
+
+        <section>
+          <h2>Ads</h2>
+          {loadError && <p className="error">Could not load ads: {loadError}</p>}
+          {!loadError && ads.length === 0 && <p className="muted">No ads yet.</p>}
+          <ul className="ad-list">
+            {ads.map((ad) => (
+              <li key={ad.id} className="ad-card">
+                {editingId === ad.id ? (
+                  <AdForm
+                    ad={ad}
+                    onSubmit={(input) => handleUpdate(ad.id, input)}
+                    onCancel={() => setEditingId(null)}
+                  />
+                ) : (
+                  <>
+                    <h3>{ad.title}</h3>
+                    <p className="description">{ad.description}</p>
+                    <div className="meta">
+                      <span className="muted">
+                        {ad.author ? `By ${ad.author} · ` : ''}Updated {new Date(ad.updatedAt).toLocaleString()}
+                      </span>
+                      {canEdit(ad, user) && (
+                        <button type="button" className="secondary" onClick={() => setEditingId(ad.id)}>
+                          Edit
+                        </button>
+                      )}
+                    </div>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
     </main>
   )
 }

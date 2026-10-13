@@ -17,6 +17,12 @@ export interface User {
   username: string
 }
 
+export interface ListedUser {
+  id: number
+  username: string
+  createdAt: string
+}
+
 export interface Credentials {
   username: string
   password: string
@@ -26,6 +32,7 @@ export interface Credentials {
 const API_URL = `${import.meta.env.VITE_API_BASE_URL ?? ''}/api`
 const ADS_URL = `${API_URL}/ads`
 const AUTH_URL = `${API_URL}/auth`
+const USERS_URL = `${API_URL}/users`
 
 // Login and register run before a session exists, so the API does not require the CSRF header
 const CSRF_EXEMPT = [`${AUTH_URL}/login`, `${AUTH_URL}/register`]
@@ -91,6 +98,10 @@ export function login(credentials: Credentials): Promise<User> {
 
 export function register(credentials: Credentials): Promise<User> {
   return request(`${AUTH_URL}/register`, { method: 'POST', body: JSON.stringify(credentials) })
+}
+
+export function listUsers(): Promise<ListedUser[]> {
+  return request(USERS_URL)
 }
 
 export function logout(): Promise<void> {

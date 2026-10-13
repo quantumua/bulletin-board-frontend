@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-import { ApiError, createAd, getMe, listAds, login, logout, register, updateAd } from './api'
+import { ApiError, createAd, getMe, listAds, listUsers, login, logout, register, updateAd } from './api'
 
 const fetchMock = vi.fn()
 
@@ -94,6 +94,24 @@ describe('CSRF header', () => {
     fetchMock.mockResolvedValue(new Response(null, { status: 204 }))
     await logout()
     expect(lastCall().headers['X-XSRF-TOKEN']).toBe('abc')
+  })
+})
+
+describe('users endpoint', () => {
+  test('listUsers calls GET /api/users with credentials and no CSRF header', async () => {
+    document.cookie = 'XSRF-TOKEN=abc; path=/'
+    const users = [{ id: 2, username: 'bob', createdAt: '2026-01-02T00:00:00Z' }]
+    fetchMock.mockResolvedValue(jsonResponse(users))
+    await expect(listUsers()).resolves.toEqual(users)
+    expect(lastCall().url).toBe('/api/users')
+    expect(lastCall().init.method).toBeUndefined()
+    expect(lastCall().init.credentials).toBe('include')
+    expect(lastCall().headers).not.toHaveProperty('X-XSRF-TOKEN')
+  })
+
+  test('listUsers surfaces 401 as ApiError', async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ detail: 'Unauthorized' }, 401))
+    await expect(listUsers()).rejects.toMatchObject({ name: 'ApiError', status: 401 })
   })
 })
 

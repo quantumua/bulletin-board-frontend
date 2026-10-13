@@ -1,6 +1,6 @@
 # Bulletin Board – Frontend
 
-Web UI for the bulletin board: add ads and edit existing ones.
+Web UI for the bulletin board: add ads and edit existing ones, and (when logged in) browse registered users.
 
 **Stack:** React 19, TypeScript, Vite.
 
@@ -32,13 +32,21 @@ not log you in). The session lives in an `HttpOnly` cookie set by the backend, a
 `credentials: "include"`. State-changing requests echo the readable `XSRF-TOKEN` cookie in an `X-XSRF-TOKEN` header
 (`src/api.ts`). Only the author of an ad sees its Edit button; ads without an author are read-only.
 
+## Users tab
+
+Logged-in users get a "Users" tab next to "Ads" listing every registered user's username and registration date, in the
+order the API returns (newest first). The list reloads each time the tab is opened. Anonymous visitors never see the
+tab; if the session expires (`401`), the app returns to the ads view with a "session has ended" message. This needs the
+backend's `GET /api/users` (change `add-users-list-backend`).
+
 ## Test
 
 ```bash
 npm test
 ```
 
-Runs the Vitest unit tests (API client, auth state, edit-visibility rule) with `fetch` stubbed, so no backend is needed.
+Runs the Vitest unit tests (API client, auth state, edit-visibility rule, users list, and App-level tab visibility and
+session expiry) with `fetch` stubbed, so no backend is needed.
 
 ## Lint
 
