@@ -1,6 +1,7 @@
 # Bulletin Board – Frontend
 
-Web UI for the bulletin board: add ads and edit existing ones, and (when logged in) browse registered users.
+Web UI for the bulletin board: browse ads in a card grid, add and edit them from dialogs, and (when logged in) browse
+registered users.
 
 **Stack:** React 19, TypeScript, Vite.
 
@@ -25,10 +26,17 @@ Output goes to `dist/`. If the API is served from a different origin, set `VITE_
 at build time (e.g. `VITE_API_BASE_URL=https://api.example.com npm run build`) and add that frontend origin
 to the backend's `app.cors.allowed-origins`.
 
+## Layout
+
+A header holds the title, the Ads / Users tabs (logged-in only), a "+ New ad" button and the session controls ("Log in",
+or "Signed in as X" with "Log out"). Ads are cards in a responsive grid. New ad, edit and login each open in a modal
+dialog (Esc or a click outside closes it). Closing the new-ad dialog keeps what you typed, also across an expired
+session; closing the edit dialog discards unsaved changes. Colors are CSS variables at the top of `src/index.css`.
+
 ## Login
 
-Reading ads is open to everyone. Creating and editing ads needs an account: register, then log in (registering does
-not log you in). The session lives in an `HttpOnly` cookie set by the backend, and every request is sent with
+Reading ads is open to everyone. Creating and editing ads needs an account: "Log in" opens a dialog to log in or
+register (registering does not log you in). Anonymous visitors who press "+ New ad" get this dialog. The session lives in an `HttpOnly` cookie set by the backend, and every request is sent with
 `credentials: "include"`. State-changing requests echo the readable `XSRF-TOKEN` cookie in an `X-XSRF-TOKEN` header
 (`src/api.ts`). Only the author of an ad sees its Edit button; ads without an author are read-only.
 
@@ -45,8 +53,9 @@ backend's `GET /api/users` (change `add-users-list-backend`).
 npm test
 ```
 
-Runs the Vitest unit tests (API client, auth state, edit-visibility rule, users list, and App-level tab visibility and
-session expiry) with `fetch` stubbed, so no backend is needed.
+Runs the Vitest unit tests (API client, auth state, edit-visibility rule, users list, the dialog component, and App-level
+header, dialogs, drafts, tab visibility and session expiry) with `fetch` stubbed, so no backend is needed. jsdom lacks
+`<dialog>.showModal()`, so `src/test-setup.ts` stubs it.
 
 ## Lint
 

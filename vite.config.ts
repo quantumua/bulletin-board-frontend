@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'jsdom',
+    setupFiles: ['./src/test-setup.ts'],
   },
   server: {
     // Forward API calls to the Spring Boot backend during development

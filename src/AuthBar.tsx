@@ -1,16 +1,15 @@
-import AuthForm from './AuthForm'
 import { useAuth } from './useAuth'
 
-export default function AuthBar() {
+export default function AuthBar({ onLogin }: { onLogin: () => void }) {
   const { user, loading, logout } = useAuth()
 
-  if (loading) return <p className="muted">Checking session…</p>
+  if (loading) return <span className="muted">Checking session…</span>
 
   if (!user) {
     return (
-      <section>
-        <AuthForm />
-      </section>
+      <button type="button" onClick={onLogin}>
+        Log in
+      </button>
     )
   }
 
