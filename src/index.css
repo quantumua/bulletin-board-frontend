@@ -1,7 +1,16 @@
 :root {
+  --color-bg: #f6f8fa;
+  --color-surface: #fff;
+  --color-border: #d0d7de;
+  --color-text: #1f2328;
+  --color-muted: #656d76;
+  --color-accent: #1f6feb;
+  --color-danger: #cf222e;
+  --color-backdrop: rgb(31 35 40 / 0.5);
+
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  color: #1f2328;
-  background: #f6f8fa;
+  color: var(--color-text);
+  background: var(--color-bg);
 }
 
 body {
@@ -9,7 +18,7 @@ body {
 }
 
 main {
-  max-width: 720px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
@@ -35,24 +44,24 @@ input,
 textarea {
   font: inherit;
   padding: 0.5rem;
-  border: 1px solid #d0d7de;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--color-surface);
 }
 
 button {
   font: inherit;
   padding: 0.4rem 1rem;
-  border: 1px solid #1f6feb;
+  border: 1px solid var(--color-accent);
   border-radius: 6px;
-  background: #1f6feb;
-  color: #fff;
+  background: var(--color-accent);
+  color: var(--color-surface);
   cursor: pointer;
 }
 
 button.secondary {
-  background: #fff;
-  color: #1f6feb;
+  background: var(--color-surface);
+  color: var(--color-accent);
 }
 
 button:disabled {
@@ -68,16 +77,22 @@ button:disabled {
 .ad-list {
   list-style: none;
   padding: 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 1rem;
 }
 
-.ad-card {
-  background: #fff;
-  border: 1px solid #d0d7de;
+.ad-card,
+.user-row {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 1rem;
+}
+
+.ad-card {
+  display: flex;
+  flex-direction: column;
 }
 
 .ad-card h3 {
@@ -90,15 +105,106 @@ button:disabled {
 
 .meta {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
+  margin-top: auto;
 }
 
 .muted {
-  color: #656d76;
+  color: var(--color-muted);
   font-size: 0.875rem;
 }
 
 .error {
-  color: #cf222e;
+  color: var(--color-danger);
+}
+
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+.auth-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.auth-form h2 {
+  margin: 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+button.tab {
+  background: transparent;
+  color: var(--color-muted);
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+}
+
+button.tab.active {
+  color: var(--color-text);
+  border-bottom-color: var(--color-accent);
+  font-weight: 600;
+}
+
+.user-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.user-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+dialog {
+  width: min(32rem, calc(100vw - 2rem));
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+dialog::backdrop {
+  background: var(--color-backdrop);
+}
+
+.dialog-body {
+  padding: 1.5rem;
+}
+
+.dialog-body h2 {
+  margin-top: 0;
 }
